@@ -37,3 +37,18 @@ def cap_outliers(df, columns, lower_percentile, upper_percentile):
 def display_summary_statistics(df):
     print("\nSummary Statistics after Data Quality Check:")
     display(df.describe())
+
+def handle_anomalies(df, negative_value_columns, outlier_columns, lower_percentile, upper_percentile):
+    
+    # Check for missing values
+    missing_values = check_missing_values(df)
+    
+    # Drop the 'Comments' column if it has all missing values
+    if 'Comments' in df.columns and missing_values['Comments'] == len(df):
+        drop_column(df, 'Comments')
+    
+    # Replace negative values with 0
+    replace_negative_values(df, negative_value_columns)
+    
+    # Cap outliers
+    cap_outliers(df, outlier_columns, lower_percentile, upper_percentile)
