@@ -1,4 +1,4 @@
-from data_quality_checks import handle_anomalies, load_dataset
+from data_quality_checks import handle_anomalies
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
