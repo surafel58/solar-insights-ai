@@ -6,8 +6,8 @@ A data-driven project focused on analyzing solar radiation data from various reg
 
 solar-insights-ai/
 │
-├── data/ # Directory containing the datasets
-│ ├── benin-malanville.csv
+├── data/ # Directory containing the datasets \n
+│ ├── benin-malanville.csv \n
 │ ├── sierraleone-bumbuna.csv
 │ └── togo-dapaong_qc.csv
 │
