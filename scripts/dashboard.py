@@ -9,9 +9,9 @@ import gdown
 @st.cache_data
 def load_data_from_drive():
     # Google Drive file ID
-    benin_file_id = '1zqELf8xRzT3jX95PAM0vHLS_HY63v3vs'
-    sierra_leone_id = '1pBGpxlBCNHwG8m1mUNiY_ah8ZqdYb1HR'
-    togo_id = '16kSJ0B1Few44Bz27ogXClyxtJRDvzKVC'
+    benin_file_id = '1gn0wLZF9wa4w3qoi20gKsTiPxew4iLW-'
+    sierra_leone_id = '1iMJvrxsQdZK9wQRaJ3GsMTJEQrT2N-n6'
+    togo_id = '1h-fzwSQLVYbhNlzQZ0LhEgCIw0_8d2t5'
 
     benin_url = f'https://drive.google.com/uc?id={benin_file_id}'
     sierra_leone_url = f'https://drive.google.com/uc?id={sierra_leone_id}'
