@@ -63,7 +63,8 @@ To start the Streamlit dashboard, run the following command:
 ```sh
 streamlit run scripts/dashboard.py
 ```
-
+Or run the deployed version [here](https://solar-insights-ai.streamlit.app/)
+ 
 ### Jupyter Notebooks
 
 The Jupyter notebooks in the `notebooks/` directory provide detailed analysis and data processing steps. You can run these notebooks using Jupyter Lab or Jupyter Notebook.
