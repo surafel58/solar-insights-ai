@@ -3,12 +3,38 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import gdown
+
+@st.cache_data
+def load_data_from_drive():
+    # Google Drive file ID
+    benin_file_id = '1zqELf8xRzT3jX95PAM0vHLS_HY63v3vs'
+    sierra_leone_id = '1pBGpxlBCNHwG8m1mUNiY_ah8ZqdYb1HR'
+    togo_id = '16kSJ0B1Few44Bz27ogXClyxtJRDvzKVC'
+
+    benin_url = f'https://drive.google.com/uc?id={benin_file_id}'
+    sierra_leone_url = f'https://drive.google.com/uc?id={sierra_leone_id}'
+    togo_url = f'https://drive.google.com/uc?id={togo_id}'
+    
+    # Local file path where the dataset will be saved
+    benin_output = '../datasets/benin-malanville.csv'
+    sierra_leone_output = '../datasets/sierraleone-bumbuna.csv'
+    togo_output = '../datasets/togo-dapaong_qc.csv'
+    
+    # Download the file
+    gdown.download(benin_url, benin_output, quiet=False)
+    gdown.download(sierra_leone_url, sierra_leone_output, quiet=False)
+    gdown.download(togo_url, togo_output, quiet=False)
+    
+    # Load the dataset
+    benin_data = pd.read_csv(benin_output)
+    sierra_leone_data = pd.read_csv(sierra_leone_output)
+    togo_data = pd.read_csv(togo_output)
+    return benin_data, sierra_leone_data, togo_data
 
 @st.cache_data
 def load_data():
-    benin = load_dataset('../data/benin-malanville.csv')
-    sierra_leone = load_dataset('../data/sierraleone-bumbuna.csv')
-    togo = load_dataset('../data/togo-dapaong_qc.csv')
+    benin, sierra_leone, togo = load_data_from_drive()
 
     # Handle anomalies in the dataset
     handle_anomalies(
