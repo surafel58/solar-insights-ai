@@ -1,0 +1,133 @@
+from data_quality_checks import handle_anomalies, load_dataset
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+@st.cache_data
+def load_data():
+    benin = load_dataset('../data/benin-malanville.csv')
+    sierra_leone = load_dataset('../data/sierraleone-bumbuna.csv')
+    togo = load_dataset('../data/togo-dapaong_qc.csv')
+
+    # Handle anomalies in the dataset
+    handle_anomalies(
+    benin,
+    negative_value_columns=['GHI', 'DNI', 'DHI'],
+    outlier_columns=['ModA', 'ModB', 'WS', 'WSgust'],
+    lower_percentile=0.05,
+    upper_percentile=0.95
+    )
+
+    handle_anomalies(
+    sierra_leone,
+    negative_value_columns=['GHI', 'DNI', 'DHI'],
+    outlier_columns=['ModA', 'ModB', 'WS', 'WSgust'],
+    lower_percentile=0.05,
+    upper_percentile=0.95
+    )
+
+    handle_anomalies(
+    togo,
+    negative_value_columns=['GHI', 'DNI', 'DHI'],
+    outlier_columns=['ModA', 'ModB', 'WS', 'WSgust'],
+    lower_percentile=0.05,
+    upper_percentile=0.95
+    )
+
+    return benin, sierra_leone, togo
+
+benin_data, sierra_leone_data, togo_data = load_data()
+
+st.title("Solar Radiation and Environmental Data Dashboard")
+
+# Dataset Selection
+dataset_choice = st.selectbox("Choose a dataset to visualize:", ["Benin", "Sierra Leone", "Togo"])
+
+if dataset_choice == "Benin":
+    data = benin_data
+elif dataset_choice == "Sierra Leone":
+    data = sierra_leone_data
+else:
+    data = togo_data
+
+# Display Raw Data
+if st.checkbox("Show raw data"):
+    st.write(data.head())
+
+# Interactive Time Series Plot
+st.subheader("Time Series Analysis")
+
+data["Timestamp"] = pd.to_datetime(data["Timestamp"])
+downsampled_data = data.resample('D', on='Timestamp').mean()  # Downsample to daily data
+
+columns_to_plot = st.multiselect("Select columns to plot:", data.columns[1:], default=["GHI", "DNI", "DHI", "Tamb"])
+
+if len(columns_to_plot) > 0:
+    plt.figure(figsize=(10, 6))
+    for col in columns_to_plot:
+        plt.plot(data["Timestamp"], data[col], label=col)
+    plt.xlabel("Timestamp")
+    plt.ylabel("Value")
+    plt.legend()
+    plt.xticks(rotation=45)
+    st.pyplot(plt)
+
+# Correlation Heatmap
+st.subheader("Correlation Heatmap")
+
+# Allow the user to select features
+selected_features = st.multiselect(
+    "Select features for the correlation heatmap:", 
+    options=data.columns.tolist(), 
+    default=data.columns.tolist()[:2]
+)
+
+# Check if at least two features are selected
+if len(selected_features) >= 2:
+    # Compute the correlation matrix for the selected features
+    corr_matrix = data[selected_features].corr()
+
+    # Plot the correlation heatmap
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", vmin=-1, vmax=1)
+    st.pyplot(plt)
+else:
+    st.write("Please select at least two features to generate the correlation heatmap.")
+
+# Scatter Matrix (Pair Plot)
+st.subheader("Scatter Matrix (Pair Plot)")
+
+st.write("""
+Select the features you want to include in the pair plot. This allows you to focus on specific relationships within the dataset.
+""")
+
+# Select numeric columns
+numeric_columns = data.select_dtypes(include=['int64', 'float64']).columns.tolist()
+
+selected_features = st.multiselect(
+    "Select features for pair plot:",
+    options=numeric_columns,
+    default=None  # default selection
+)
+
+if len(selected_features) > 1:
+    with st.spinner("Generating pair plot..."):
+        pair_plot = sns.pairplot(data[selected_features], diag_kind='kde')
+        st.pyplot(pair_plot)
+else:
+    st.warning("Please select at least two features to create a pair plot.")
+
+
+# Histogram with Adjustable Bin Size
+st.subheader("Histogram with Adjustable Bin Size")
+
+selected_column = st.selectbox("Select a feature for histogram:", numeric_columns)
+
+bin_size = st.slider("Select number of bins:", min_value=10, max_value=100, value=30)
+
+plt.figure(figsize=(10, 6))
+plt.hist(data[selected_column], bins=bin_size, color='skyblue', edgecolor='black')
+plt.xlabel(selected_column)
+plt.ylabel('Frequency')
+st.pyplot(plt)
