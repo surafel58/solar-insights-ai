@@ -17,6 +17,9 @@ def load_data_from_drive():
     sierra_leone_url = f'https://drive.google.com/uc?id={sierra_leone_id}'
     togo_url = f'https://drive.google.com/uc?id={togo_id}'
     
+    # Ensure the directories exist
+    os.makedirs(os.path.abspath('../datasets'), exist_ok=True)
+
     # Local file path where the dataset will be saved
     benin_output = os.path.abspath('../datasets/benin-malanville.csv')
     sierra_leone_output = os.path.abspath('../datasets/sierraleone-bumbuna.csv')
