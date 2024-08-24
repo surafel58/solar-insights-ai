@@ -1,3 +1,4 @@
+import os
 from data_quality_checks import handle_anomalies
 import streamlit as st
 import pandas as pd
@@ -17,9 +18,9 @@ def load_data_from_drive():
     togo_url = f'https://drive.google.com/uc?id={togo_id}'
     
     # Local file path where the dataset will be saved
-    benin_output = '../datasets/benin-malanville.csv'
-    sierra_leone_output = '../datasets/sierraleone-bumbuna.csv'
-    togo_output = '../datasets/togo-dapaong_qc.csv'
+    benin_output = os.path.abspath('../datasets/benin-malanville.csv')
+    sierra_leone_output = os.path.abspath('../datasets/sierraleone-bumbuna.csv')
+    togo_output = os.path.abspath('../datasets/togo-dapaong_qc.csv')
     
     # Download the file
     gdown.download(benin_url, benin_output, quiet=False)
